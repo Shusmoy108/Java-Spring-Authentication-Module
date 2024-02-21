@@ -1,5 +1,7 @@
 package com.mywork.oauthsecurity.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,14 +16,14 @@ import com.mywork.oauthsecurity.dto.UserDTO;
 import com.mywork.oauthsecurity.repository.UserRepository;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
     @Autowired
     UserRepository userRepository;
     
     
     @GetMapping("/")
-    public ResponseEntity getMethod() {
+    public ResponseEntity<List> getMethod() {
         return ResponseEntity.ok(userRepository.findAll());
     }
     

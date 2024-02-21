@@ -21,8 +21,12 @@ import com.mywork.oauthsecurity.document.User;
 import com.mywork.oauthsecurity.dto.LoginDTO;
 import com.mywork.oauthsecurity.dto.SignupDTO;
 import com.mywork.oauthsecurity.dto.TokenDTO;
+import com.mywork.oauthsecurity.enums.Role;
 import com.mywork.oauthsecurity.security.TokenGenerator;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -38,7 +42,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody SignupDTO signupDTO) {
-        User user = new User(signupDTO.getUsername(), signupDTO.getPassword(), "ADMIN");
+        User user = new User(signupDTO.getUsername(), signupDTO.getPassword(), Role.ADMIN);
         userDetailsManager.createUser(user);
 
         Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(user, signupDTO.getPassword(), Collections.EMPTY_LIST);
@@ -49,7 +53,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginDTO loginDTO) {
         Authentication authentication = daoAuthenticationProvider.authenticate(UsernamePasswordAuthenticationToken.unauthenticated(loginDTO.getUsername(), loginDTO.getPassword()));
-
+        //log.info(authentication);
         return ResponseEntity.ok(tokenGenerator.createToken(authentication));
     }
 

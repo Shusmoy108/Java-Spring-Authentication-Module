@@ -1,12 +1,12 @@
 package com.mywork.oauthsecurity.document;
-
 import java.util.Collection;
-import java.util.Collections;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.mywork.oauthsecurity.enums.Role;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,12 +29,12 @@ public class User implements UserDetails {
 	private String password;
 	
 	@NonNull
-	private String role;
+	private Role role;
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return Collections.EMPTY_LIST;
+	
+		return role.getAuthorities();
 	}
 
 	@Override

@@ -1,10 +1,13 @@
 package com.mywork.oauthsecurity.security;
+import static com.mywork.oauthsecurity.enums.Permission.ADMIN_CREATE;
+import static com.mywork.oauthsecurity.enums.Role.ADMIN;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,7 +31,6 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
 import lombok.extern.slf4j.Slf4j;
-
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -98,8 +100,15 @@ public class WebSecurity {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/auth/*").permitAll()
+        				.requestMatchers("/api/auth/*").permitAll()
+                        //.requestMatchers("/api/user/**").permitAll()
+                        .requestMatchers("/api/user/**").hasAnyRole(ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, "/api/user/").hasAuthority(ADMIN_CREATE.name())
+                        //.requestMatchers(HttpMethod.POST, "/api/user/**").hasAnyAuthority(ADMIN_READ.name(),MANAGER_READ.name())
+                        //.requestMatchers(HttpMethod.PUT, "/api/user/**").hasAnyAuthority(ADMIN_READ.name(),MANAGER_READ.name())
                         .anyRequest().authenticated()
+                        //.requestMatchers("/api/auth/*").permitAll()
+                        
                 )
                 .csrf().disable()
                 .cors().disable()
